@@ -99,9 +99,8 @@ EOF
 echo -e "${GREEN}Installing packages...${NC}"
 pacman -S --noconfirm \
     reflector \
-    gnome firefox \
-    networkmanager \
-    nvidia nvidia-utils nvidia-settings \
+    plasma-meta konsole firefox \
+    network-manager-applet \
     xorg-xwayland \
     git neovim nano
 
