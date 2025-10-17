@@ -99,7 +99,7 @@ EOF
 echo -e "${GREEN}Installing packages...${NC}"
 pacman -S --noconfirm \
     reflector \
-    plasma-meta konsole firefox \
+    plasma-meta konsole sddm firefox \
     network-manager-applet \
     xorg-xwayland \
     git neovim nano
@@ -117,7 +117,7 @@ mkinitcpio -P
 
 # Enable services
 systemctl enable NetworkManager
-systemctl enable gdm
+systemctl enable sddm
 
 echo -e "${GREEN}=== Installation Complete ===${NC}"
 echo "System configured. Exit chroot and reboot."
