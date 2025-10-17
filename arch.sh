@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Arch Linux + GNOME installation script
+# Arch Linux + KDE installation script
 # Ryzen 5600H + GTX 1650 with NVIDIA proprietary drivers
 # Uses systemd-boot, ext4, minimal setup
 
