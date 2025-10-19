@@ -11,7 +11,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-echo -e "${GREEN}=== Arch Linux + GNOME Installation ===${NC}"
+echo -e "${GREEN}=== Arch Linux + KDE Installation ===${NC}"
 
 # Partition configuration
 read -p "Enter EFI partition (e.g., /dev/sda1): " EFI_PART
@@ -99,7 +99,7 @@ EOF
 echo -e "${GREEN}Installing packages...${NC}"
 pacman -S --noconfirm \
     reflector \
-    plasma-meta konsole sddm firefox \
+    plasma-desktop plasma-nm dolphin konsole sddm firefox \
     network-manager-applet \
     xorg-xwayland \
     git neovim nano
