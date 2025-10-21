@@ -29,7 +29,7 @@ if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
 fi
 
 echo -e "${GREEN}Formatting partitions...${NC}"
-mkfs.fat -F32 $EFI_PART
+# mkfs.fat -F32 $EFI_PART
 mkfs.ext4 -F $ROOT_PART
 
 echo -e "${GREEN}Mounting partitions...${NC}"
@@ -99,7 +99,7 @@ EOF
 echo -e "${GREEN}Installing packages...${NC}"
 pacman -S --noconfirm \
     reflector \
-    plasma-desktop plasma-nm dolphin konsole sddm firefox \
+    plasma-desktop plasma-nm dolphin kwalletmanager konsole sddm firefox \
     network-manager-applet \
     xorg-xwayland \
     git neovim nano
