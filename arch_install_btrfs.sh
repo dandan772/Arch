@@ -29,7 +29,7 @@ if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
 fi
 
 echo -e "${GREEN}Formatting partitions...${NC}"
-# mkfs.fat -F32 $EFI_PART
+mkfs.fat -F32 $EFI_PART
 mkfs.btrfs -f $ROOT_PART
 
 echo -e "${GREEN}Creating btrfs subvolumes...${NC}"
