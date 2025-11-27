@@ -133,7 +133,7 @@ pacman -S --noconfirm \
     network-manager-applet \
     xorg-xwayland \
     git neovim nano \
-    ark bluedevil blueman bluez bluez-utils breeze-gtk btop nvtop fastfetch \
+    ark bluedevil bluez bluez-utils breeze-gtk btop nvtop fastfetch \
     flatpak kalk kate kde-gtk-config kio-admin kscreen linux-headers \
     linux-lts-headers noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
     nvidia-open-dkms nvidia-settings pacman-contrib partitionmanager pipewire-alsa \
