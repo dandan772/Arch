@@ -148,6 +148,7 @@ pacman -Syy
 # Enable services
 systemctl enable NetworkManager
 systemctl enable sddm
+systemctl enable bluetooth
 
 echo -e "${GREEN}=== Installation Complete ===${NC}"
 echo "System configured. Exit chroot and reboot."
