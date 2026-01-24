@@ -124,7 +124,7 @@ pacman -S --noconfirm \
     linux-lts-headers noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
     nvidia-open-dkms nvidia-settings pacman-contrib partitionmanager pipewire-alsa \
     pipewire-pulse pipewire-audio pipewire-jack plasma-pa power-profiles-daemon \
-    qbittorrent sddm-kcm timeshift unrar wireplumber
+    qbittorrent sddm-kcm unrar wireplumber
 
 # Enable services
 systemctl enable NetworkManager
