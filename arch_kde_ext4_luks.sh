@@ -50,7 +50,7 @@ if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
 fi
 
 echo -e "${GREEN}Formatting EFI partition (if needed)...${NC}"
-#mkfs.fat -F32 $EFI_PART
+mkfs.fat -F32 $EFI_PART
 
 echo -e "${GREEN}Setting up LUKS encryption...${NC}"
 echo -e "${YELLOW}This will DESTROY all data on $ROOT_PART${NC}"
