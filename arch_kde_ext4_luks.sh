@@ -159,21 +159,10 @@ pacman -Syy
 # Install necessary packages
 echo -e "${GREEN}Installing packages...${NC}"
 pacman -S --noconfirm \
-    plasma-desktop plasma-nm dolphin kwalletmanager konsole sddm firefox \
-    network-manager-applet \
-    xorg-xwayland \
-    git neovim nano \
-    ark bluedevil bluez bluez-utils breeze-gtk btop fastfetch \
-    flatpak kalk kate kde-gtk-config kio-admin kscreen linux-headers \
-    linux-lts-headers noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
-    pacman-contrib partitionmanager pipewire-alsa \
-    pipewire-pulse pipewire-audio pipewire-jack plasma-pa power-profiles-daemon \
-    qbittorrent sddm-kcm unrar wireplumber
-
-# Enable services
-systemctl enable NetworkManager
-systemctl enable sddm
-systemctl enable bluetooth
+    sway swaybg swaylock swayidle waybar foot \      
+    networkmanager xorg-xwayland nano btop \
+    noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
+    pipewire-pulse wireplumber
 
 echo -e "${GREEN}=== Installation Complete ===${NC}"
 echo "System configured with LUKS encryption."
