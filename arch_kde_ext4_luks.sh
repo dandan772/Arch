@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Arch Linux + KDE installation script with LUKS encryption
+# Arch Linux + LUKS encryption
 # Ryzen 5600H with integrated graphics
 # Uses systemd-boot, ext4 on LUKS, minimal setup
 
