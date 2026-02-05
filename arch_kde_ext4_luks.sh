@@ -164,6 +164,9 @@ pacman -S --noconfirm \
     noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
     pipewire-pulse wireplumber
 
+# Enable services
+systemctl enable NetworkManager
+
 echo -e "${GREEN}=== Installation Complete ===${NC}"
 echo "System configured with LUKS encryption."
 echo "You will need to enter your encryption password at boot."
