@@ -1,0 +1,136 @@
+#!/bin/bash
+
+# Arch Linux installation script with LUKS2 encryption
+# Ryzen 5600H with integrated graphics
+# Uses systemd-boot, ext4, LUKS2 encryption, minimal setup
+
+set -e
+
+# Color output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+# Setup logging
+LOG_FILE="/var/log/arch_install_$(date +%Y%m%d_%H%M%S).log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo -e "${GREEN}=== Arch Linux Installation ===${NC}"
+echo "Installation log will be saved to: $LOG_FILE"
+
+# Partition configuration
+read -p "Enter disk device (e.g., /dev/sda): " DISK
+read -p "Enter EFI partition (e.g., /dev/sda1): " EFI_PART
+read -p "Enter EFI partition number (e.g., 1): " EFI_NUM
+read -p "Enter root partition (e.g., /dev/sda2): " ROOT_PART
+read -p "Enter hostname: " HOSTNAME
+read -p "Enter username: " USERNAME
+read -s -p "Enter user password for $USERNAME: " PASSWORD
+echo
+read -s -p "Confirm user password: " PASSWORD_CONFIRM
+echo
+
+if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
+    echo -e "${RED}Passwords do not match!${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}Setting up LUKS2 encryption...${NC}"
+echo "You will be prompted to enter a passphrase for disk encryption."
+cryptsetup luksFormat --type luks2 $ROOT_PART
+cryptsetup open $ROOT_PART cryptroot
+
+echo -e "${GREEN}Formatting partitions...${NC}"
+#mkfs.fat -F32 $EFI_PART
+mkfs.ext4 -F /dev/mapper/cryptroot
+
+echo -e "${GREEN}Mounting partitions...${NC}"
+mount /dev/mapper/cryptroot /mnt
+mkdir -p /mnt/boot
+mount $EFI_PART /mnt/boot
+
+echo -e "${GREEN}Installing base system...${NC}"
+pacstrap -K /mnt base linux-lts linux-firmware amd-ucode sudo fish efibootmgr networkmanager
+
+echo -e "${GREEN}Generating fstab...${NC}"
+genfstab -U /mnt >> /mnt/etc/fstab
+
+# Get UUID for LUKS partition
+ROOT_UUID=$(blkid -s UUID -o value $ROOT_PART)
+
+echo -e "${GREEN}Configuring system...${NC}"
+arch-chroot /mnt bash << CHROOT_EOF
+set -e
+
+# Timezone and locale
+ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+hwclock --systohc
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
+# Keyboard layout
+echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
+
+# Hostname
+echo "$HOSTNAME" > /etc/hostname
+
+# Create user with sudo access
+useradd -m -G wheel -s /usr/bin/fish "$USERNAME"
+echo "$USERNAME:$PASSWORD" | chpasswd
+sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+
+# Pacman config
+sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+
+# Configure mkinitcpio for LUKS2
+sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+mkinitcpio -P
+
+# Install systemd-boot
+echo -e "${GREEN}Installing systemd-boot...${NC}"
+bootctl install
+
+# Create EFI entry with efibootmgr
+echo -e "${GREEN}Creating EFI boot entry...${NC}"
+efibootmgr --create --disk $DISK --part $EFI_NUM --loader '\EFI\systemd\systemd-bootx64.efi' --label "Linux Boot Manager" --unicode
+
+# Create systemd-boot entry
+mkdir -p /boot/loader/entries
+
+cat > /boot/loader/entries/arch-lts.conf << EOF
+title Arch Linux LTS
+linux /vmlinuz-linux-lts
+initrd /amd-ucode.img
+initrd /initramfs-linux-lts.img
+options cryptdevice=UUID=$ROOT_UUID:cryptroot root=/dev/mapper/cryptroot rw
+EOF
+
+# Bootloader config
+cat > /boot/loader/loader.conf << 'EOF'
+default arch-lts.conf
+timeout 3
+editor no
+EOF
+
+# Configure mirrors with reflector
+echo -e "${GREEN}Configuring mirrors with reflector...${NC}"
+reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+pacman -Syy
+
+# Enable services
+systemctl enable NetworkManager
+
+echo -e "${GREEN}=== Installation Complete ===${NC}"
+echo "System configured. Exit chroot and reboot."
+
+CHROOT_EOF
+
+echo -e "${GREEN}=== Installation complete ===${NC}"
+echo "Unmounting and ready to reboot..."
+umount -R /mnt
+cryptsetup close cryptroot
+
+echo -e "${GREEN}Installation log saved to: $LOG_FILE${NC}"
+echo -e "${GREEN}You can copy this log file before rebooting if needed.${NC}"
+echo -e "${GREEN}Type 'reboot' to restart your system${NC}"
