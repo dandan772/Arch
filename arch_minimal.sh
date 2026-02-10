@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Arch Linux installation script without encryption
+# Arch Linux installation script
 # Ryzen 5600H with integrated graphics
 # Uses systemd-boot, ext4, minimal setup
 
@@ -31,7 +31,7 @@ if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
 fi
 
 echo -e "${GREEN}Formatting partitions...${NC}"
-mkfs.fat -F32 $EFI_PART
+# mkfs.fat -F32 $EFI_PART
 mkfs.ext4 -F $ROOT_PART
 
 echo -e "${GREEN}Mounting partitions...${NC}"
