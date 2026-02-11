@@ -37,7 +37,7 @@ if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
 fi
 
 echo -e "${GREEN}Formatting partitions...${NC}"
-mkfs.fat -F32 $EFI_PART
+# mkfs.fat -F32 $EFI_PART
 mkfs.ext4 -F $ROOT_PART
 
 echo -e "${GREEN}Mounting partitions...${NC}"
