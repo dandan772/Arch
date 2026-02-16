@@ -40,7 +40,7 @@ mkdir -p /mnt/boot
 mount $EFI_PART /mnt/boot
 
 echo -e "${GREEN}Installing base system...${NC}"
-pacstrap -K /mnt base linux-lts linux-firmware amd-ucode sudo fish efibootmgr networkmanager reflector
+pacstrap -K /mnt base base-devel nano linux linux-firmware amd-ucode sudo fish efibootmgr networkmanager reflector
 
 echo -e "${GREEN}Generating fstab...${NC}"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -81,17 +81,17 @@ efibootmgr --create --disk $DISK --part $EFI_NUM --loader '\EFI\systemd\systemd-
 # Create systemd-boot entry
 mkdir -p /boot/loader/entries
 
-cat > /boot/loader/entries/arch-lts.conf << EOF
-title Arch Linux LTS
-linux /vmlinuz-linux-lts
+cat > /boot/loader/entries/arch.conf << EOF
+title Arch Linux
+linux /vmlinuz-linux
 initrd /amd-ucode.img
-initrd /initramfs-linux-lts.img
+initrd /initramfs-linux.img
 options root=$ROOT_PART rw
 EOF
 
 # Bootloader config
 cat > /boot/loader/loader.conf << 'EOF'
-default arch-lts.conf
+default arch.conf
 timeout 3
 editor no
 EOF
